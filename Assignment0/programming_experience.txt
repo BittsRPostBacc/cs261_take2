@@ -1,0 +1,8 @@
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
+# Course: CS261 - Data Structures
+# Assignment: 0
+# Due Date: 6/28/2023
+# Description: Programming Experience assignment
+
+I know some python, java, javascript, C#, C, C++, SQL and thought it\'92s not a programming language per se - Powershell.  With the first 6 I have roughly 2 years of experience.  I have around 4 years of experience with SQL, and 8 years of Powershell.  I have used VS Code, PyCharm, WebStorm and Visual Studio the most.  I have taken CS161 and 162, CS290 and this is my second go at CS261.  I have in the very distant past taken C/C++ but remember very little of those classes.  I have done quite a lot of work on Udemy related to everything listed except SQL and Powershell.  SQL I was taught by my old boss, and Powershell I taught myself for use at my job doing automation tasks on and for the Windows servers that I administer there.

@@ -1,9 +1,9 @@
-# Name: Randy Bitts
-# OSU Email: bittsr@oregonstate.edu
+# Name:
+# OSU Email:
 # Course: CS261 - Data Structures
-# Assignment: Assignment 1: Python Fundamentals Review
-# Due Date: 07/11/2023
-# Description: A review of python to get warmed up for the course
+# Assignment:
+# Due Date:
+# Description:
 
 
 import random
@@ -162,7 +162,7 @@ def is_sorted(arr: StaticArray) -> int:
 
 def find_mode(arr: StaticArray) -> (int, int):
     """
-    Function takes an array and return the mode and frequency
+    TODO: Write this implementation
     """
     max_frequency = 0
     mode = None
@@ -188,7 +188,7 @@ def find_mode(arr: StaticArray) -> (int, int):
 
 def remove_duplicates(arr: StaticArray) -> StaticArray:
     """
-    Function takes an array and removes any duplicates
+    TODO: Write this implementation
     """
     if arr.length() == 1:
         return arr
@@ -211,88 +211,75 @@ def remove_duplicates(arr: StaticArray) -> StaticArray:
             new_arr_index += 1
 
     return new_arr
-# ------------------- PROBLEM 9 - COUNT_SORT --------------------------------
 
+
+# ------------------- PROBLEM 9 - COUNT_SORT --------------------------------
 
 def count_sort(arr: StaticArray) -> StaticArray:
     """
-    Function takes an array and performs a count sort to return it in non ascending order
+    TODO: Write this implementation
     """
-    min_value = max_value = arr[0]
-    n = arr.length()
+    length = arr.length()
+    # Find the minimum and maximum values in the array
+    min_value = arr[0]
+    max_value = arr[0]
+    for num in range(1, length):
+        if arr[num] < min_value:
+            min_value = arr[num]
+        if num > max_value:
+            max_value = arr[num]
 
-    # Find the range of values in the input array
-    for i in range(1, n):
-        value = arr[i]
-        if value < min_value:
-            min_value = value
-        if value > max_value:
-            max_value = value
+    # Calculate the range of values
+    value_range = max_value - min_value + 1
 
-    # Create the count array
-    count_size = max_value - min_value + 1
-    count = StaticArray(count_size)
+    # Create a count array with length equal to the value range
+    count = StaticArray(value_range)
 
     # Count the occurrences of each element in the input array
-    for i in range(n):
-        value = arr[i]
-        count_index = value - min_value
-        count_value = count[count_index]
-        if count_value is not None:
-            count[count_index] = count_value + 1
-        else:
-            count[count_index] = 1
+    for num in range(length):
+        count[num - min_value] += 1
 
-    # Modify the count array
-    for i in range(1, count_size):
-        if count[i] is not None:
-            count[i] += count[i - 1]
-        else:
-            count[i] = count[i - 1]
+    # Calculate the cumulative sum of the count array
+    total = 0
+    for i in range(count.length()):
+        count[i], total = total, total + count[i]
 
-    # Create the result array
-    result = StaticArray(n)
+    # Create a new output array with the same length as the input array
+    output = StaticArray(length)
 
-    # Populate the result array in non-ascending order
-    for i in range(n - 1, -1, -1):
-        value = arr[i]
-        count_index = value - min_value
-        count_value = count[count_index]
+    # Place the elements in the output array at the correct positions
+    for num in range(length):
+        output[count[arr[num] - min_value]] = arr[num]
+        count[num - min_value] += 1
 
-        result[n - count_value] = value
-        count[count_index] -= 1
+    return output
 
-    return result
 
-# ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
+# ------------------- PROBLEM 10 - TRANSFORM_STRING ---------------------------
 
-def sorted_squares(arr: StaticArray) -> StaticArray:
+def transform_string(source: str, s1: str, s2: str) -> str:
     """
-    Function takes an array and return an array of squares in sorted order
+    TODO: Write this implementation
     """
-    n = arr.length()
-    result = StaticArray(n)
-    left = 0
-    right = n - 1
-    i = n - 1
+    transformed_string = ''
 
-    while left <= right:
-        left_square = arr[left] * arr[left]
-        right_square = arr[right] * arr[right]
-
-        if left_square >= right_square:
-            result[i] = left_square
-            left += 1
+    for character in source:
+        index = s1.find(character)
+        if index >= 0:
+            transformed_string = transformed_string + s2[index]
+        elif character.isupper():
+            transformed_string = transformed_string + ' '
+        elif character.islower():
+            transformed_string = transformed_string + '#'
+        elif character.isdigit():
+            transformed_string = transformed_string + '!'
         else:
-            result[i] = right_square
-            right -= 1
+            transformed_string = transformed_string + '='
 
-        i -= 1
+    return transformed_string
 
-    return result
 
 # ------------------- BASIC TESTING -----------------------------------------
-
 
 if __name__ == "__main__":
 
@@ -411,7 +398,6 @@ if __name__ == "__main__":
         arr = StaticArray(len(case))
         for i, value in enumerate(case):
             arr[i] = value
-
         result = find_mode(arr)
         if result:
             print(f"{arr}\nMode: {result[0]}, Frequency: {result[1]}\n")
@@ -459,26 +445,31 @@ if __name__ == "__main__":
     result = count_sort(arr)
     print(f'Finished sorting large array of {array_size} elements')
 
-    print('\n# sorted_squares example 1')
-    test_cases = (
-        [1, 2, 3, 4, 5],
-        [-5, -4, -3, -2, -1, 0],
-        [-3, -2, -2, 0, 1, 2, 3],
+    print('\n# transform_string example 1\n')
+    original = (
+        '#     #  =====  !      =====  =====  #     #  =====',
+        '#  #  #  !      !      !      !   !  ##   ##  !    ',
+        '# # # #  !===   !      !      !   !  # # # #  !=== ',
+        '##   ##  !      !      !      !   !  #  #  #  !    ',
+        '#     #  =====  =====  =====  =====  #     #  =====',
+        '                                                   ',
+        '         TTTTT OOOOO      22222   66666    1       ',
+        '           T   O   O          2   6       11       ',
+        '           T   O   O       222    66666    1       ',
+        '           T   O   O      2       6   6    1       ',
+        '           T   OOOOO      22222   66666   111      ',
     )
-    for case in test_cases:
-        arr = StaticArray(len(case))
-        for i, value in enumerate(sorted(case)):
-            arr[i] = value
-        print(arr)
-        result = sorted_squares(arr)
-        print(result)
+    test_cases = ('eMKCPVkRI%~}+$GW9EOQNMI!_%{#ED}#=-~WJbFNWSQqDO-..@}',
+                  'dGAqJLcNC0YFJQEB5JJKETQ0QOODKF8EYX7BGdzAACmrSL0PVKC',
+                  'aLiAnVhSV9}_+QOD3YSIYPR4MCKYUF9QUV9TVvNdFuGqVU4$/%D',
+                  'zmRJWfoKC5RDKVYO3PWMATC7BEIIVX9LJR7FKtDXxXLpFG7PESX',
+                  'hFKGVErCS$**!<OS<_/.>NR*)<<+IR!,=%?OAiPQJILzMI_#[+}',
+                  'EOQUQJLBQLDLAVQSWERAGGAOKUUKOPUWLQSKJNECCPRRXGAUABN',
+                  'WGBKTQSGVHHHHHTZZZZZMQKBLC66666NNR11111OKUN2KTGYUIB',
+                  'YFOWAOYLWGQHJQXZAUPZPNUCEJABRR6MYR1JASNOTF22MAAGTVA',
+                  'GNLXFPEPMYGHQQGZGEPZXGJVEYE666UKNE11111WGNW2NVLCIOK',
+                  'VTABNCKEFTJHXATZTYGZVLXLAB6JVGRATY1GEY1PGCO2QFPRUAP',
+                  'UTCKYKGJBWMHPYGZZZZZWOKQTM66666GLA11111CPF222RUPCJT')
 
-    print('\n# sorted_squares example 2')
-    array_size = 5_000_000
-    case = [random.randint(-10 ** 9, 10 ** 9) for _ in range(array_size)]
-    arr = StaticArray(len(case))
-    for i, value in enumerate(sorted(case)):
-        arr[i] = value
-    print(f'Started sorting large array of {array_size} elements')
-    result = sorted_squares(arr)
-    print(f'Finished sorting large array of {array_size} elements')
+    for case in test_cases:
+        print(transform_string(case, '612HZ', '261TO'))

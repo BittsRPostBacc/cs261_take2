@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name:  Randy Bitts
+# OSU Email:  bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment:  Assignment 2 - Dynamic Array and Bag ADT
+# Due Date:  7/18/2023
+# Description:  Working with Dynamic Arrays, and Bags
 
 
 from static_array import StaticArray
@@ -133,57 +133,180 @@ class DynamicArray:
 
     def resize(self, new_capacity: int) -> None:
         """
-        TODO: Write this implementation
+        Function resizes the array
         """
-        pass
+        # exit if new_capacity is not a positive integer or smaller than current size
+        if new_capacity <= self._size or new_capacity <= 0:
+            return
+
+        new_data = [None] * new_capacity
+
+        # Copy the existing elements to the new list
+        for i in range(self._size):
+            new_data[i] = self._data[i]
+
+        # update the underlying storage with the resized list, and update the capacity
+        self._data = new_data
+        self._capacity = new_capacity
 
     def append(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Function appends the value to the end of the array
         """
-        pass
+        if self._size + 1 > self._capacity:
+            self.resize(self._capacity * 2)  # check and resize if needed
+        self._data[self._size] = value  # add the new value at the end
+        self._size += 1  # increment the size
 
     def insert_at_index(self, index: int, value: object) -> None:
         """
-        TODO: Write this implementation
+        Function inserts a value at the specified index if possible
         """
-        pass
+        # Check to see if the index is possible, and check to see if the array needs to be resized
+        if index < 0 or index > self._size:
+            raise DynamicArrayException
+        elif index > self._capacity - 1:
+            self.resize(self._capacity * 2)
+
+        # If the array is full, resize it
+        if self._size == self._capacity:
+            self.resize(self._capacity * 2)
+
+        # iterate through the array and move the values so that we can insert into the requested index
+        for item in range(self._size, index, -1):
+            if self._data[item] is None and self._data[item - 1] is None:
+                raise DynamicArrayException
+            else:
+                self._data[item] = self._data[item -1]
+
+        # Assign the value to the specified index and increment the size of the array
+        self._data[index] = value
+        self._size = self._size + 1
 
     def remove_at_index(self, index: int) -> None:
         """
-        TODO: Write this implementation
+        Function removes the value at the specified index if possible
         """
-        pass
+        # Determine if the index is possible
+        if index < 0 or index > self._size:
+            raise DynamicArrayException
+
+        # check to see if the array will need to be resized down after removal
+        if self._capacity > 10:
+            if self._size / self._capacity < .25:
+                if self._size < 5:
+                    self.resize(10)
+                else:
+                    self.resize(self._size * 2)
+
+        # Move the array values down in the array
+        while index < self._size - 1:
+            self._data[index] = self._data[index + 1]
+            index += 1
+
+        # Decrement the size of the array, Exception if the new index is less than the array size
+        if index == self._size - 1:
+            self._size = self._size - 1
+        else:
+            raise DynamicArrayException
 
     def slice(self, start_index: int, size: int) -> "DynamicArray":
         """
-        TODO: Write this implementation
+        Function slices an array from a specified index to a specfied end
         """
-        pass
+        # Validate that the slice is possible
+        if start_index < 0 or size > self._size or start_index + size > self._size or size <= 0 or start_index > self._size:
+            raise DynamicArrayException
+
+        # Create the new array and size it accordingly
+        sliced_array = DynamicArray()
+        if sliced_array._capacity < size:
+            sliced_array.resize(sliced_array._capacity * 2)
+
+        # work through the array to get the appropriate values and place in the new array
+        count = 0
+        if self._data[start_index] is None or start_index > self._size - 1:
+            raise DynamicArrayException
+        while count < size:
+            if sliced_array._capacity == sliced_array._size:
+                sliced_array.resize(sliced_array._capacity * 2)
+            sliced_array._data[count] = self._data[start_index]
+            start_index += 1
+            count += 1
+            sliced_array._size += 1
+
+        return sliced_array
 
     def merge(self, second_da: "DynamicArray") -> None:
         """
-        TODO: Write this implementation
+        Function merges two arrays
         """
-        pass
+        # Resize the array if necessary to accomodate the second array
+        if second_da._size + self._size > self._capacity:
+            self.resize(self._capacity * 2)
+
+        count = 0
+        while count < second_da._size:
+            self.append(second_da._data[count])
+            count += 1
 
     def map(self, map_func) -> "DynamicArray":
         """
-        TODO: Write this implementation
+        Function maps an array based ona second function
         """
-        pass
+
+        mapped_array = DynamicArray()
+        if mapped_array._capacity < self._capacity:
+            mapped_array.resize(self._capacity)
+
+        for item in range(self.length()):
+            mapped_value = map_func(self._data[item])
+            mapped_array.insert_at_index(item, mapped_value)
+
+        return mapped_array
 
     def filter(self, filter_func) -> "DynamicArray":
         """
-        TODO: Write this implementation
+        Function filters an array based on a second function
         """
-        pass
+        filtered_array = DynamicArray()
+        if filtered_array._capacity < self._capacity:
+            filtered_array.resize(self._capacity)
+
+        for item in range(self.length()):
+            if filter_func(self._data[item]) is True:
+                filtered_array.append(self._data[item])
+
+        return filtered_array
 
     def reduce(self, reduce_func, initializer=None) -> object:
         """
-        TODO: Write this implementation
+       Function reduces an array based on a second function
         """
-        pass
+        length = self.length()
+        return_value = 0
+
+        if self._size == 0:
+            if initializer is not None:
+                return initializer
+            else:
+                return None
+
+        if initializer is None:
+            start_value = self._data[0]
+            start_index = 1
+        else:
+            start_value = initializer
+            start_index = 0
+
+        if self._size == 1 and initializer is None:
+            return_value = reduce_func(start_value, 0)
+        else:
+            for item in range(start_index, length):
+                return_value = reduce_func(start_value,self._data[item])
+                start_value = return_value
+
+        return return_value
 
 
 def find_mode(arr: DynamicArray) -> (DynamicArray, int):
