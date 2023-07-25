@@ -41,7 +41,7 @@ def min_max(arr: StaticArray) -> (int, int):
 
 def fizz_buzz(arr: StaticArray) -> StaticArray:
     """
-    Takes an array and determines if the values are divisible:
+    Takes an array and determines if the values are divisible by:
         3 = fizz
         5 = buzz
         Both = fizzbuzz
@@ -265,6 +265,7 @@ def count_sort(arr: StaticArray) -> StaticArray:
     return result
 
 # ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
+
 
 def sorted_squares(arr: StaticArray) -> StaticArray:
     """

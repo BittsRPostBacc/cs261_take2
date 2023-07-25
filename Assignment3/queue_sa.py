@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 3 - Linked List and ADT Implementation
+# Due Date: 07/24/23
+# Description: Linked List and other ADT Implementations
 
 
 # Note: Changing any part of the pre-implemented methods (besides adding  #
@@ -68,30 +68,52 @@ class Queue:
 
     def enqueue(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Inserts a value to the end of the queue, resizing the queue as needed
         """
-        pass
+        if self._current_size == self._sa.length():
+            self._double_queue()
+
+        self._sa[(self._front + self._current_size) % self._sa.length()] = value
+        self._current_size += 1
 
     def dequeue(self) -> object:
         """
-        TODO: Write this implementation
+        Removes the value at the front of the queue
         """
-        pass
+        if self.is_empty():
+            raise QueueException
+
+        dequeued_value = self._sa[self._front]
+        self._front = self._increment(self._front) % self._sa.length()
+        self._current_size -= 1
+
+        return dequeued_value
 
     def front(self) -> object:
         """
-        TODO: Write this implementation
+        Returns the value at the front of the queue
         """
-        pass
+        if self.is_empty():
+            raise QueueException
+
+        return self._sa[self._front]
 
     # The method below is optional, but recommended, to implement. #
     # You may alter it in any way you see fit.                     #
 
     def _double_queue(self) -> None:
         """
-        TODO: Write this implementation
+        Doubles the size of the queue as needed
         """
-        pass
+        new_sa = StaticArray(2 * self._current_size)
+        front_position = self._front
+        for i in range(self._current_size):
+            new_sa[i] = self._sa.get(front_position)
+            front_position = self._increment(front_position)
+
+        self._sa = new_sa
+        self._front = 0
+        self._back = self._current_size - 1
 
 
 # ------------------- BASIC TESTING -----------------------------------------

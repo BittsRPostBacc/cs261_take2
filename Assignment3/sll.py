@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 3 - Linked List and ADT Implementation
+# Due Date: 07/24/23
+# Description: Linked List and other ADT Implementations
 
 
 from SLNode import *
@@ -69,51 +69,123 @@ class LinkedList:
 
     def insert_front(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Inserts a value to the front of the SLL
         """
-        pass
+        new_node = SLNode(value)
+        new_node.next = self._head.next
+        self._head.next = new_node
 
     def insert_back(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Inserts a value to the back of the SLL
         """
-        pass
+        new_node = SLNode(value)
+        node = self._head
+
+        while node.next:
+            node = node.next
+        node.next = new_node
 
     def insert_at_index(self, index: int, value: object) -> None:
         """
-        TODO: Write this implementation
+        Inserts a value into the SLL at the specified index if possible
         """
-        pass
+        if index < 0 or index > self.length():
+            raise SLLException
+
+        new_node = SLNode(value)
+        node = self._head
+
+        for item in range(index):
+            node = node.next
+
+        new_node.next = node.next
+        node.next = new_node
 
     def remove_at_index(self, index: int) -> None:
         """
-        TODO: Write this implementation
+        Removes a value from the SLL at a specified index if possible
         """
-        pass
+        if index < 0 or index >= self.length():
+            raise SLLException
+
+        node = self._head
+
+        for item in range(index):
+            node = node.next
+
+        node.next = node.next.next
+
+        print("  ")
 
     def remove(self, value: object) -> bool:
         """
-        TODO: Write this implementation
+        Removes a value from the SLL if it exists, and returns True if to does otherwise False
         """
-        pass
+        node = self._head
+
+        while node.next:
+            if node.next.value == value:
+                node.next = node.next.next
+                return True
+            else:
+                node = node.next
+
+        return False
 
     def count(self, value: object) -> int:
         """
-        TODO: Write this implementation
+        Counts the number of times a value appears in the SLL
         """
-        pass
+        number_found = 0
+        node = self._head
+
+        while node:
+            if node.value == value:
+                number_found += 1
+                node = node.next
+            else:
+                node = node.next
+
+        return number_found
 
     def find(self, value: object) -> bool:
         """
-        TODO: Write this implementation
+        Finds a value in the SLL, if it is there return True, otherwise False
         """
-        pass
+        node = self._head
+        while node:
+            if node.value == value:
+                return True
+            else:
+                node = node.next
+
+        return False
 
     def slice(self, start_index: int, size: int) -> "LinkedList":
         """
-        TODO: Write this implementation
+        Creates a new SLL with the contents of the original SLL from the specified index
+            to the end point denoted by the passed in "size" if possible
         """
-        pass
+        if start_index < 0 or start_index >= self.length():
+            raise SLLException
+        if size + start_index > self.length() or size < 0:
+            raise SLLException
+
+        sliced_list = LinkedList()
+        node = self._head
+
+        for item in range(start_index):
+            node = node.next
+
+        count = 0
+        new_node = sliced_list._head
+        for item in range(size):
+            sliced_list.insert_back(node.next.value)
+            node = node.next
+            count += 1
+
+        return sliced_list
 
 
 if __name__ == "__main__":

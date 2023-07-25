@@ -138,14 +138,13 @@ class DynamicArray:
         if new_capacity < self._size or new_capacity <= 0:
             return
 
-        new_data = [None] * new_capacity
+        new_array = StaticArray(new_capacity)
 
-        # Copy the existing elements to the new list
         for i in range(self._size):
-            new_data[i] = self._data[i]
+            new_array[i] = self._data[i]
 
         # update the underlying storage with the resized list, and update the capacity
-        self._data = new_data
+        self._data = new_array
         self._capacity = new_capacity
 
     def append(self, value: object) -> None:
@@ -186,32 +185,20 @@ class DynamicArray:
         """
         Function removes the value at the specified index if possible
         """
-        # Determine if the index is possible
-        if index < 0 or index > self._size:
+        if index < 0 or index >= self._size:
             raise DynamicArrayException
 
-        # check to see if the array will need to be resized down after removal
-        if self._capacity > 10:
-            if self._size / self._capacity < .25:
-                if self._size < 5:
-                    self.resize(10)
-                else:
-                    self.resize(self._size * 2)
+        for i in range(index, self._size - 1):
+            self._data[i] = self._data[i + 1]
 
-        # Move the array values down in the array
-        while index < self._size - 1:
-            self._data[index] = self._data[index + 1]
-            index += 1
+        self._size -= 1
 
-        # Decrement the size of the array, Exception if the new index is less than the array size
-        if index == self._size - 1:
-            self._size = self._size - 1
-        else:
-            raise DynamicArrayException
+        if self._size <= self._capacity // 4:
+            self.resize(max(self._capacity // 2, 4))
 
     def slice(self, start_index: int, size: int) -> "DynamicArray":
         """
-        Function slices an array from a specified index to a specfied end
+        Function slices an array from a specified index to a specified end
         """
         # Validate that the slice is possible
         if start_index < 0 or size > self._size or start_index + size > self._size or size < 0 or start_index >= self._size:
@@ -222,17 +209,10 @@ class DynamicArray:
         if sliced_array._capacity < size:
             sliced_array.resize(sliced_array._capacity * 2)
 
-        # work through the array to get the appropriate values and place in the new array
-        count = 0
-        if self._data[start_index] is None or start_index > self._size - 1:
-            raise DynamicArrayException
-        while count < size:
-            if sliced_array._capacity == sliced_array._size:
-                sliced_array.resize(sliced_array._capacity * 2)
-            sliced_array._data[count] = self._data[start_index]
-            start_index += 1
-            count += 1
-            sliced_array._size += 1
+        end_index = min(start_index + size, self._size)
+
+        for i in range(start_index, end_index):
+            sliced_array.append(self._data[i])
 
         return sliced_array
 
@@ -240,14 +220,8 @@ class DynamicArray:
         """
         Function merges two arrays
         """
-        # Resize the array if necessary to accomodate the second array
-        if second_da._size + self._size > self._capacity:
-            self.resize(self._capacity * 2)
-
-        count = 0
-        while count < second_da._size:
-            self.append(second_da._data[count])
-            count += 1
+        for i in range(second_da._size):
+            self.append(second_da._data[i])
 
     def map(self, map_func) -> "DynamicArray":
         """
@@ -268,8 +242,6 @@ class DynamicArray:
         Function filters an array based on a second function
         """
         filtered_array = DynamicArray()
-        # if filtered_array._capacity < self._capacity:
-        #     filtered_array.resize(self._capacity)
 
         for item in range(self.length()):
             if filter_func(self._data[item]) is True:
@@ -281,7 +253,6 @@ class DynamicArray:
         """
        Function reduces an array based on a second function
         """
-        length = self.length()
         return_value = 0
 
         if self._size == 0:
@@ -290,7 +261,7 @@ class DynamicArray:
             else:
                 return None
 
-        if length == 1 and initializer is None:
+        if self.length() == 1 and initializer is None:
             return self._data[0]
 
         if initializer is None:
@@ -303,7 +274,7 @@ class DynamicArray:
         if self._size == 1 and initializer is None:
             return_value = reduce_func(start_value, 0)
         else:
-            for item in range(start_index, length):
+            for item in range(start_index, self.length()):
                 return_value = reduce_func(start_value, self._data[item])
                 start_value = return_value
 
@@ -311,38 +282,31 @@ class DynamicArray:
 
 def find_mode(arr: DynamicArray) -> (DynamicArray, int):
     """
-    TODO: Write this implementation
+    Finds the mode and frequency of an array
     """
-    n = arr.length()
-    if n == 0:
-        return DynamicArray(), 0
+    if arr.is_empty():
+        raise DynamicArrayException
 
-    max_frequency = 1
-    current_frequency = 1
     modes = DynamicArray()
-    # modes.append(arr[0])
+    max_frequency = 0
 
-    for i in range(n):
-        if i != 0 and arr[i] == arr[i - 1]:
-            current_frequency += 1
-        else:
-            current_frequency = 1
+    for i in range(arr.length()):
+        value = arr[i]
+        frequency = 1
 
-        if current_frequency > max_frequency:
-            max_frequency = current_frequency
+        # Check for duplicates from the current index onwards
+        for j in range(i + 1, arr.length()):
+            if arr[j] == value:
+                frequency += 1
 
-    current_frequency = 0
-    count = 0
-    while count < n:
-        if count != 0 and arr[count] == arr[count - 1]:
-            current_frequency += 1
-        else:
-            current_frequency = 1
-        if current_frequency == max_frequency:
-            modes.append(arr[count])
-        count += 1
+        # If we found a new maximum frequency, update the modes array
+        if frequency > max_frequency:
+            max_frequency = frequency
+            modes = DynamicArray([value])
+        elif frequency == max_frequency:
+            modes.append(value)
 
-    return (modes, max_frequency)
+    return modes, max_frequency
 
 
 # ------------------- BASIC TESTING -----------------------------------------

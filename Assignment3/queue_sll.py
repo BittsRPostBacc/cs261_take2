@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 3 - Linked List and ADT Implementation
+# Due Date: 07/24/23
+# Description: Linked List and other ADT Implementations
 
 
 from SLNode import SLNode
@@ -64,21 +64,38 @@ class Queue:
 
     def enqueue(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Inserts a value to the end of the SLL queue
         """
-        pass
+        new_node = SLNode(value)
+
+        if self.is_empty():
+            self._head = new_node
+        else:
+            self._tail.next = new_node
+
+        self._tail = new_node
 
     def dequeue(self) -> object:
         """
-        TODO: Write this implementation
+        Removes a value from the head of the queue and returns it if it exists
         """
-        pass
+        node = self._head
+        if self.is_empty():
+            raise QueueException
+        else:
+            dequeued_value = self._head.value
+            self._head = self._head.next
+
+        return dequeued_value
 
     def front(self) -> object:
         """
-        TODO: Write this implementation
+        Returns the value at the front of the queue
         """
-        pass
+        if self.is_empty():
+            raise QueueException
+        else:
+            return self._head.value
 
 
 # ------------------- BASIC TESTING -----------------------------------------

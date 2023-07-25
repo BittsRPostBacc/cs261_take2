@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name:  Randy Bitts
+# OSU Email:  bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment:  Assignment 2 - Dynamic Array and Bag ADT
+# Due Date:  7/18/2023
+# Description:  Working with Dynamic Arrays, and Bags
 
 
 from dynamic_array import *
@@ -41,50 +41,85 @@ class Bag:
         return self._da.length()
 
     # -----------------------------------------------------------------------
-
     def add(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Adds a value to the Bag
         """
-        pass
+        self._da.append(value)
 
     def remove(self, value: object) -> bool:
         """
-        TODO: Write this implementation
+        Removes a value from the Bag
         """
-        pass
+        bag_length = self._da.length()
+
+        for i in range(bag_length):
+            if self._da[i] == value:
+                self._da.remove_at_index(i)
+                return True
+
+        return False
 
     def count(self, value: object) -> int:
         """
-        TODO: Write this implementation
+        Counts the number of items in the Bag that match the passed in Value, if any
         """
-        pass
+        counter = 0
+        length = self._da.length()
+
+        for x in range(length):
+            if self._da[x] == value:
+                counter += 1
+
+        return counter
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        Clears the Bag
         """
-        pass
+        length = self._da.length()
+        count = 0
+
+        while count < length:
+            self._da.remove_at_index(0)
+            count += 1
 
     def equal(self, second_bag: "Bag") -> bool:
         """
-        TODO: Write this implementation
+        Determines if two Bags are equal
         """
-        pass
+        bag1_length = self._da.length()
+        bag2_length = second_bag._da.length()
+
+        if bag1_length == 0 and bag2_length == 0:
+            return True
+        elif bag1_length != bag2_length:
+            return False
+
+        for i in range(bag1_length):
+            element = self._da.get_at_index(i)
+            if self.count(element) != second_bag.count(element):
+                return False
+        return True
 
     def __iter__(self):
         """
-        TODO: Write this implementation
+        Allows the bag to iterate across itself
         """
-        pass
+        self._index = 0
+        return self
 
     def __next__(self):
         """
-        TODO: Write this implementation
+        Gets the next value in the bag
         """
-        pass
+        if self._index < self._da.length():
+            value = self._da.get_at_index(self._index)
+            self._index += 1
+        else:
+            raise StopIteration
 
-
+        return value
 # ------------------- BASIC TESTING -----------------------------------------
 
 

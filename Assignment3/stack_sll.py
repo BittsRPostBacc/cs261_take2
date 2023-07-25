@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 3 - Linked List and ADT Implementation
+# Due Date: 07/24/23
+# Description: Linked List and other ADT Implementations
 
 
 from SLNode import SLNode
@@ -63,21 +63,43 @@ class Stack:
 
     def push(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Puts the passed value to the top of the stack
         """
-        pass
+        new_node = SLNode(value)
+        node = self._head
+
+        if self.is_empty():
+            self._head = new_node
+        else:
+            length = self.size()
+            for item in range(length):
+                self._head = new_node
+                self._head.next = node
+                node = self._head.next
 
     def pop(self) -> object:
         """
-        TODO: Write this implementation
+        Removes the value from the top of the stack and returns it
         """
-        pass
+        popped_value = 0
+
+        if self.is_empty():
+            raise StackException
+        else:
+            popped_value = self._head.value
+            self._head = self._head.next
+
+        return popped_value
 
     def top(self) -> object:
         """
-        TODO: Write this implementation
+        Returns the value at the top of the stack
         """
-        pass
+
+        if self.is_empty():
+            raise StackException
+        else:
+            return self._head.value
 
 # ------------------- BASIC TESTING -----------------------------------------
 
