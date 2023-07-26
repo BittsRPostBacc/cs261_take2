@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 4
+# Due Date: 07/31/23
+# Description: BinarySearchTrees and AVL
 
 
 import random
@@ -109,33 +109,96 @@ class BST:
         """
         TODO: Write your implementation
         """
-        pass
+        if self._root:
+            self._add_helper(self._root, value)
+        else:
+            self._root = BSTNode(value)
+
+    def _add_helper(self, node: BSTNode, value: object) -> None:
+        """
+        ######
+        Helper method for the add function
+        :param node:
+        :param value:
+        :return:
+        """
+        if value < node.value:
+            if node.left:
+                self._add_helper(node.left, value)
+            else:
+                node.left = BSTNode(value)
+        else:
+            if node.right:
+                self._add_helper(node.right, value)
+            else:
+                node.right = BSTNode(value)
 
     def remove(self, value: object) -> bool:
         """
         TODO: Write your implementation
         """
-        pass
+        parent = None
+        current = self._root
 
-    # Consider implementing methods that handle different removal scenarios; #
-    # you may find that you're able to use some of them in the AVL.          #
-    # Remove these comments.                                                 #
-    # Remove these method stubs if you decide not to use them.               #
-    # Change these methods in any way you'd like.                            #
+        while current:
+            if value == current.value:
+                self._remove_node(parent, current)
+                return True
+            elif value < current.value:
+                parent = current
+                current = current.left
+            else:
+                parent = current
+                current = current.right
+
+        return False
+
+    def _remove_node(self, parent: BSTNode, node: BSTNode) -> None:
+        """
+        #########
+        :param parent:
+        :param node:
+        :return:
+        """
+        if not node.left and not node.right:
+            self._remove_no_subtrees(parent, node)
+        elif not node.left or not node.right:
+            self._remove_one_subtree(parent, node)
+        else:
+            self._remove_two_subtrees(parent, node)
 
     def _remove_no_subtrees(self, remove_parent: BSTNode, remove_node: BSTNode) -> None:
         """
         TODO: Write your implementation
         """
         # remove node that has no subtrees (no left or right nodes)
-        pass
+        if not remove_parent:
+            self._root = None
+        elif remove_parent.left == remove_node:
+            remove_parent.left = None
+        else:
+            remove_parent.right = None
 
     def _remove_one_subtree(self, remove_parent: BSTNode, remove_node: BSTNode) -> None:
         """
         TODO: Write your implementation
         """
         # remove node that has a left or right subtree (only)
-        pass
+        if not remove_parent:
+            if remove_node.left:
+                self._root = remove_node.left
+            else:
+                self._root = remove_node.right
+        elif remove_parent.left == remove_node:
+            if remove_node.left:
+                remove_parent.left = remove_node.left
+            else:
+                remove_parent.left = remove_node.right
+        else:
+            if remove_node.left:
+                remove_parent.right = remove_node.left
+            else:
+                remove_parent.right = remove_node.right
 
     def _remove_two_subtrees(self, remove_parent: BSTNode, remove_node: BSTNode) -> None:
         """
@@ -143,43 +206,93 @@ class BST:
         """
         # remove node that has two subtrees
         # need to find inorder successor and its parent (make a method!)
-        pass
+        successor_parent = remove_node
+        successor = remove_node.right
+
+        while successor.left:
+            successor_parent = successor
+            successor = successor.left
+
+        if successor_parent != remove_node:
+            successor_parent.left = successor.right
+        else:
+            successor_parent.right = successor.right
 
     def contains(self, value: object) -> bool:
         """
         TODO: Write your implementation
         """
-        pass
+        current = self._root
+        while current:
+            if value == current.value:
+                return True
+            elif value < current.value:
+                current = current.left
+            else:
+                current = current.right
+
+        return False
 
     def inorder_traversal(self) -> Queue:
         """
         TODO: Write your implementation
         """
-        pass
+        traversal_queue = Queue()
+        self._inorder_traversal_helper(self._root, traversal_queue)
+
+        return traversal_queue
+
+    def _inorder_traversal_helper(self, node: BSTNode, queue: Queue) -> None:
+        """
+        ###########
+        :param node:
+        :param queue:
+        :return:
+        """
+        if not node:
+            return
+
+        self._inorder_traversal_helper(node.left, queue)
+        queue.enqueue(node.value)
+        self._inorder_traversal_helper(node.right, queue)
 
     def find_min(self) -> object:
         """
         TODO: Write your implementation
         """
-        pass
+        if self._root is None:
+            return None
+
+        current = self._root
+        while current.left:
+            current = current.left
+
+        return current.value
 
     def find_max(self) -> object:
         """
         TODO: Write your implementation
         """
-        pass
+        if self._root is None:
+            return None
+
+        current = self._root
+        while current.right:
+            current = current.right
+
+        return current.value
 
     def is_empty(self) -> bool:
         """
         TODO: Write your implementation
         """
-        pass
+        return self._root is None
 
     def make_empty(self) -> None:
         """
         TODO: Write your implementation
         """
-        pass
+        self._root = None
 
 
 # ------------------- BASIC TESTING -----------------------------------------

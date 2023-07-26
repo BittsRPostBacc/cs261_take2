@@ -1,9 +1,9 @@
-# Name:
-# OSU Email:
+# Name: Randy Bitts
+# OSU Email: bittsr@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: Assignment 4
+# Due Date: 07/31/23
+# Description: BinarySearchTrees and AVL
 
 
 import random
@@ -103,7 +103,7 @@ class AVL(BST):
         """
         TODO: Write your implementation
         """
-        pass
+
 
     def remove(self, value: object) -> bool:
         """
